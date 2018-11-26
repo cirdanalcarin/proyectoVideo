@@ -15,24 +15,6 @@ function invalidAccesConstructor() {
 }
 invalidAccesConstructor.prototype = new baseException();
 invalidAccesConstructor.prototype.constructor = invalidAccesConstructor;
-
-function isEmptyException() {
-    this.name = "isEmptyException";
-    this.message = "The list is empty";
+invalidAccesConstructor.prototype.toString = function () {
+    return baseException.toString.call(this);
 }
-isEmptyException.prototype = new baseException();
-isEmptyException.prototype.constructor = isEmptyException;
-
-function isFullException() {
-    this.name = "isFullException";
-    this.message = "The list is full";
-}
-isFullException.prototype = new baseException();
-isFullException.prototype.constructor = isFullException;
-
-function indexLimitException() {
-    this.name = "indexLimitException";
-    this.message = "the index is outside the limits";
-}
-indexLimitException.prototype = new baseException();
-indexLimitException.prototype.constructor = indexLimitException;

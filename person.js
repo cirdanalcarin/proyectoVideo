@@ -1,5 +1,46 @@
 "use-strict";
 
+function InvalidNameException() {
+    this.name = "InvalidNameException";
+    this.message = "The name is invalid";
+}
+InvalidNameException.prototype = new baseException();
+InvalidNameException.prototype.constructor = InvalidNameException;
+InvalidNameException.prototype.toString = function () {
+    return baseException.toString.call(this);
+}
+
+function InvalidLastnameException() {
+    this.name = "InvalidLastnameException";
+    this.message = "The Lastname is invalid";
+}
+InvalidLastnameException.prototype = new baseException();
+InvalidLastnameException.prototype.constructor = InvalidLastnameException;
+InvalidLastnameException.prototype.toString = function () {
+    return baseException.toString.call(this);
+}
+
+function InvalidDateException() {
+    this.name = "InvalidDateException";
+    this.message = "The Date is invalid";
+}
+InvalidDateException.prototype = new baseException();
+InvalidDateException.prototype.constructor = InvalidDateException;
+InvalidDateException.prototype.toString = function () {
+    return baseException.toString.call(this);
+}
+
+function InvalidPictureException() {
+    this.name = "InvalidPictureException";
+    this.message = "The Picture is invalid";
+}
+InvalidPictureException.prototype = new baseException();
+InvalidPictureException.prototype.constructor = InvalidPictureException;
+InvalidPictureException.prototype.toString = function () {
+    return baseException.toString.call(this);
+}
+
+
 function person(name, lastname1, lastname2, date, picture) {
     //check instance creation
     if (!(this instanceof person)) {
