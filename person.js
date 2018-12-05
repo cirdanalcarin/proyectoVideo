@@ -1,6 +1,6 @@
 "use-strict";
 
-function InvalidNameException() {
+function InvalidNameException(param) {
     this.name = "InvalidNameException";
     this.message = "The name is invalid";
 }
@@ -10,7 +10,7 @@ InvalidNameException.prototype.toString = function () {
     return baseException.toString.call(this);
 }
 
-function InvalidLastnameException() {
+function InvalidLastnameException(param) {
     this.name = "InvalidLastnameException";
     this.message = "The Lastname is invalid";
 }
@@ -20,7 +20,7 @@ InvalidLastnameException.prototype.toString = function () {
     return baseException.toString.call(this);
 }
 
-function InvalidDateException() {
+function InvalidDateException(param) {
     this.name = "InvalidDateException";
     this.message = "The Date is invalid";
 }
@@ -30,7 +30,7 @@ InvalidDateException.prototype.toString = function () {
     return baseException.toString.call(this);
 }
 
-function InvalidPictureException() {
+function InvalidPictureException(param) {
     this.name = "InvalidPictureException";
     this.message = "The Picture is invalid";
 }
@@ -41,24 +41,26 @@ InvalidPictureException.prototype.toString = function () {
 }
 
 
-function person(name, lastname1, lastname2, date, picture) {
+function person(name = "", lastname1 = "", lastname2, born = new Date(), picture) {
     //check instance creation
     if (!(this instanceof person)) {
         throw new invalidAccesConstructor();
     }
 
     //input validation
-    if (!name) throw new InvalidNameException(name);
-    if (!lastname1) throw new InvalidLastnameException(lastname1);
-    if (!lastname2 || !"") throw new InvalidLastnameException(lastname2);
-    if (!date) throw new InvalidDateException(date);
-    if (!picture || !"") throw new InvalidPictureException(picture);
+    name = typeof name !== 'undefined' ? name : "";
+    if (name === "") throw new emptyValueException("name");
+    lastname1 = typeof lastname1 !== 'undefined' ? lastname1 : "";
+    if (lastname1 === "") throw new emptyValueException("lastname1");
+    born = typeof born !== 'undefined' ? born : 0;
+    if (born === 0) throw new emptyValueException("born");
 
-    //private variables
+
+    //private attributes
     var _name = name;
     var _lastname1 = lastname1;
     var _lastname2 = lastname2 || "";
-    var _date = new Date(date);
+    var _born = new Date(date);
     var _picture = picture || "";
 
     //Getters and Setters
@@ -86,11 +88,11 @@ function person(name, lastname1, lastname2, date, picture) {
         }
     });
 
-    Object.defineProperties(this, "date", {
-        get: function () { return _date },
-        set: function (newDate) {
-            if (!newDate) throw new InvalidDateException(newDate);
-            _date = newDate;
+    Object.defineProperties(this, "born", {
+        get: function () { return _born },
+        set: function (newBorn) {
+            if (!newBorn) throw new InvalidDateException(newBorn);
+            _born = newBorn;
         }
     });
 
@@ -105,5 +107,5 @@ function person(name, lastname1, lastname2, date, picture) {
 person.prototype.constructor = person;
 person.prototype.toString() = function () {
     return "Name: " + this.name + "\nLastname 1: " + this.lastname1 + "\nLastname 2: " + this.lastname2
-        + "Date: " + this.date + "\nPicture: " + this.picture;
+        + "\nDate: " + this.date + "\nPicture: " + this.picture;
 }

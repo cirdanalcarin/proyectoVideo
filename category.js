@@ -1,18 +1,38 @@
 "use-strict";
 
-function category(name, description) {
+function InvalidNameException(param) {
+    this.name = "InvalidNameException";
+    this.message = "The name is invalid";
+}
+InvalidNameException.prototype = new baseException();
+InvalidNameException.prototype.constructor = InvalidNameException;
+InvalidNameException.prototype.toString = function () {
+    return baseException.toString.call(this);
+}
+
+function InvalidDescriptionException(param) {
+    this.name = "InvalidDescriptionException";
+    this.message = "The Description is invalid";
+}
+InvalidDescriptionException.prototype = new baseException();
+InvalidDescriptionException.prototype.constructor = InvalidDescriptionException;
+InvalidDescriptionException.prototype.toString = function () {
+    return baseException.toString.call(this);
+}
+
+function category(name = "", description) {
     //check instance creation
     if (!(this instanceof category)) {
         throw new invalidAccesConstructor();
     }
 
     //input validation
-    if (!name) throw new InvalidNameException(name);
-    if ((typeof description) != "string") throw new InvalidDescriptionValue(description);
+    name = typeof name !== 'undefined' ? name : "";
+    if (name === "") throw new emptyValueException("name");
 
-    //private variables
+    //private attributes
     var _name = name;
-    var _description = description;
+    var _description = description || "";
 
     //Getters and Setters
     Object.defineProperties(this, "name", {

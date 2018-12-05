@@ -1,6 +1,6 @@
 "use-strict";
 
-function InvalidDurationException() {
+function InvalidDurationException(param) {
     this.name = "InvalidDurationException";
     this.message = "The Duration is invalid";
 }
@@ -10,7 +10,7 @@ InvalidDurationException.prototype.toString = function () {
     return baseException.toString.call(this);
 }
 
-function InvalidLinkException() {
+function InvalidLinkException(param) {
     this.name = "InvalidLinkException";
     this.message = "The Link is invalid";
 }
@@ -20,7 +20,7 @@ InvalidLinkException.prototype.toString = function () {
     return baseException.toString.call(this);
 }
 
-function InvalidAudioException() {
+function InvalidAudioException(param) {
     this.name = "InvalidAudioException";
     this.message = "The Audio is invalid";
 }
@@ -30,7 +30,7 @@ InvalidAudioException.prototype.toString = function () {
     return baseException.toString.call(this);
 }
 
-function InvalidSubtitleException() {
+function InvalidSubtitleException(param) {
     this.name = "InvalidSubtitleException";
     this.message = "The Subtitle is invalid";
 }
@@ -40,7 +40,7 @@ InvalidSubtitleException.prototype.toString = function () {
     return baseException.toString.call(this);
 }
 
-function resource(duration, link, audio, subtitle) {
+function resource(duration = 0, link = "", audio, subtitle) {
     //check instance creation
     if (!(this instanceof person)) {
         throw new invalidAccesConstructor();
@@ -50,16 +50,12 @@ function resource(duration, link, audio, subtitle) {
     var sub = ["Spanish", "English", "French"];
 
     //input validation
-    if (isNaN(duration)) throw new InvalidDurationException(duration);
-    if (link != "string") throw new InvalidLinkException(link);
-    if (audio != "Spanish" || audio != "English" || audio != "French") {
-        throw new InvalidAudioException(audio);
-    }
-    if (subtitle != "Spanish" || subtitle != "English" || subtitle != "French") {
-        throw new InvalidAudioException(subtitle);
-    }
+    duration = typeof duration !== 'undefined' ? duration : 0;
+	if (duration === 0) throw new emptyValueException("duration");
+    link = typeof link !== 'undefined' ? link : "";
+	if (link === "") throw new emptyValueException("link");
 
-
+    //private attributes
     var _duration = duration;
     var _link = link;
     if (audio == "Spanish") {
@@ -110,9 +106,37 @@ function resource(duration, link, audio, subtitle) {
         }
     });
 
+    this.addAudio = function (audio) {
+        au.push(audio);
+    }
+
+    this.addSubtitle = function (subtitle) {
+        sub.push(subtitle);
+    }
+
+    this.removeAudio = function (audio) {
+        var elem = au.indexOf(audio);
+        if (elem !== -1) {
+            au.splice(elem, 1);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    this.removeSubtitle = function (subtitle) {
+        var elem = sub.indexOf(subtitle);
+        if (elem !== -1) {
+            sub.splice(elem, 1);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 resource.prototype.constructor = resource;
 resource.prototype.toString() = function () {
     return "Duration: " + this.duration + "\nLink: " + this.link + "\nAudio: " + this.audio
-        + "Subtitle: " + this.subtitle;
+        + "\nSubtitle: " + this.subtitle;
 }
