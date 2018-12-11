@@ -41,7 +41,7 @@ InvalidPictureException.prototype.toString = function () {
 }
 
 
-function person(name = "", lastname1 = "", lastname2, born = new Date(), picture) {
+function person(name = "", lastname1 = "", lastname2, born = "", picture) {
     //check instance creation
     if (!(this instanceof person)) {
         throw new invalidAccesConstructor();
@@ -52,15 +52,16 @@ function person(name = "", lastname1 = "", lastname2, born = new Date(), picture
     if (name === "") throw new emptyValueException("name");
     lastname1 = typeof lastname1 !== 'undefined' ? lastname1 : "";
     if (lastname1 === "") throw new emptyValueException("lastname1");
-    born = typeof born !== 'undefined' ? born : 0;
-    if (born === 0) throw new emptyValueException("born");
+    born = typeof born !== 'undefined' ? born : "";
+    if (born === "") throw new emptyValueException("born");
 
 
     //private attributes
     var _name = name;
     var _lastname1 = lastname1;
     var _lastname2 = lastname2 || "";
-    var _born = new Date(date);
+    var parts = born.split("/");
+    var _born = new Date(parts[2], parts[1] - 1, parts[0]);
     var _picture = picture || "";
 
     //Getters and Setters
@@ -105,7 +106,7 @@ function person(name = "", lastname1 = "", lastname2, born = new Date(), picture
     });
 }
 person.prototype.constructor = person;
-person.prototype.toString() = function () {
+person.prototype.toString = function () {
     return "Name: " + this.name + "\nLastname 1: " + this.lastname1 + "\nLastname 2: " + this.lastname2
         + "\nDate: " + this.date + "\nPicture: " + this.picture;
 }

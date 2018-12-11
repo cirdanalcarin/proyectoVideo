@@ -40,14 +40,11 @@ InvalidSubtitleException.prototype.toString = function () {
     return baseException.toString.call(this);
 }
 
-function resource(duration = 0, link = "", audio, subtitle) {
+function resource(duration = 0, link = "") {
     //check instance creation
     if (!(this instanceof person)) {
         throw new invalidAccesConstructor();
     }
-
-    var au = ["Spanish", "English", "French"];
-    var sub = ["Spanish", "English", "French"];
 
     //input validation
     duration = typeof duration !== 'undefined' ? duration : 0;
@@ -58,20 +55,9 @@ function resource(duration = 0, link = "", audio, subtitle) {
     //private attributes
     var _duration = duration;
     var _link = link;
-    if (audio == "Spanish") {
-        var _audio = au[0];
-    } else if (audio == "English") {
-        var _audio = au[1];
-    } else {
-        var _audio = au[2];
-    }
-    if (subtitle == "Spanish") {
-        var _subtitle = sub[0];
-    } else if (subtitle == "English") {
-        var _subtitle = sub[1];
-    } else {
-        var _subtitle = sub[2];
-    }
+    var _audio = [];
+    var _subtitle = [];
+
 
     //Getters and Setters
     Object.defineProperties(this, "duration", {
@@ -94,7 +80,7 @@ function resource(duration = 0, link = "", audio, subtitle) {
         get: function () { return _audio },
         set: function (newAudio) {
             if (!newAudio) throw new InvalidAudioException(newAudio);
-            _audio = newAudio;
+            _audio.push(newAudio);
         }
     });
 
@@ -102,41 +88,13 @@ function resource(duration = 0, link = "", audio, subtitle) {
         get: function () { return _subtitle },
         set: function (newSubtitle) {
             if (!newSubtitle) throw new InvalidSubtitleException(newSubtitle);
-            _subtitle = newSubtitle;
+            _subtitle.push(newSubtitle);
         }
     });
 
-    this.addAudio = function (audio) {
-        au.push(audio);
-    }
-
-    this.addSubtitle = function (subtitle) {
-        sub.push(subtitle);
-    }
-
-    this.removeAudio = function (audio) {
-        var elem = au.indexOf(audio);
-        if (elem !== -1) {
-            au.splice(elem, 1);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    this.removeSubtitle = function (subtitle) {
-        var elem = sub.indexOf(subtitle);
-        if (elem !== -1) {
-            sub.splice(elem, 1);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 }
 resource.prototype.constructor = resource;
-resource.prototype.toString() = function () {
+resource.prototype.toString = function () {
     return "Duration: " + this.duration + "\nLink: " + this.link + "\nAudio: " + this.audio
         + "\nSubtitle: " + this.subtitle;
 }

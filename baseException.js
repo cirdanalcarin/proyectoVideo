@@ -35,6 +35,6 @@ function emptyValueException(param) {
 }
 emptyValueException.prototype = new baseException(); 
 emptyValueException.prototype.constructor = emptyValueException;
-emptyValueExceptionn.prototype.toString = function () {
+emptyValueException.prototype.toString = function () {
     return baseException.toString.call(this);
 }

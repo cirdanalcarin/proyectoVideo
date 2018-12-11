@@ -52,6 +52,6 @@ function category(name = "", description) {
     });
 }
 category.prototype.constructor = category;
-category.prototype.toString() = function () {
+category.prototype.toString = function () {
     return "Name: " + this.name + "\nDescription: " + this.picture;
 }
