@@ -20,16 +20,6 @@ objectIsNullException.prototype.toString = function () {
     return baseException.toString.call(this);
 }
 
-function objectDoestObjectException(param) {
-    this.name = "objectDoestObjectException";
-    this.message = "The object doesn´t a object";
-}
-objectDoestObjectException.prototype = new baseException();
-objectDoestObjectException.prototype.constructor = objectDoestObjectException;
-objectDoestObjectException.prototype.toString = function () {
-    return baseException.toString.call(this);
-}
-
 function objectDoesntExistsException() {
     this.name = "objectDoesntExistsException";
     this.message = "The object doesn`t exists";
@@ -70,6 +60,56 @@ objectExistsException.prototype.toString = function () {
     return baseException.toString.call(this);
 }
 
+function InvalidCategoryException(param) {
+    this.name = "InvalidCategoryException";
+    this.message = "The Category is invalid";
+}
+InvalidCategoryException.prototype = new baseException();
+InvalidCategoryException.prototype.constructor = InvalidCategoryException;
+InvalidCategoryException.prototype.toString = function () {
+    return baseException.toString.call(this);
+}
+
+function InvalidUserException(param) {
+    this.name = "InvalidUserException";
+    this.message = "The User is invalid";
+}
+InvalidUserException.prototype = new baseException();
+InvalidUserException.prototype.constructor = InvalidUserException;
+InvalidUserException.prototype.toString = function () {
+    return baseException.toString.call(this);
+}
+
+function InvalidProductionException(param) {
+    this.name = "InvalidProductionException";
+    this.message = "The Production is invalid";
+}
+InvalidProductionException.prototype = new baseException();
+InvalidProductionException.prototype.constructor = InvalidProductionException;
+InvalidProductionException.prototype.toString = function () {
+    return baseException.toString.call(this);
+}
+
+function InvalidActorException(param) {
+    this.name = "InvalidActorException";
+    this.message = "The Actor is invalid";
+}
+InvalidActorException.prototype = new baseException();
+InvalidActorException.prototype.constructor = InvalidActorException;
+InvalidActorException.prototype.toString = function () {
+    return baseException.toString.call(this);
+}
+
+function InvalidDirectorException(param) {
+    this.name = "InvalidDirectorException";
+    this.message = "The Director is invalid";
+}
+InvalidDirectorException.prototype = new baseException();
+InvalidDirectorException.prototype.constructor = InvalidDirectorException;
+InvalidDirectorException.prototype.toString = function () {
+    return baseException.toString.call(this);
+}
+
 //declaration of videosystem object by singelton pattern
 var videoSystem = (function () {
     var instantiated; //object with the single instance videoSystem
@@ -80,12 +120,12 @@ var videoSystem = (function () {
         //constructor of the videoSystem instance
         function videoSystem() {
             //check instance creation
-            if (!(this instanceof season)) {
+            if (!(this instanceof videoSystem)) {
                 throw new invalidAccesConstructor();
             }
 
             //private attributes
-            _name = "videoSystem";
+            _name = "Anonimous";
             _users = [];
             _productions = [];
             _categories = [];
@@ -93,10 +133,11 @@ var videoSystem = (function () {
             _directors = [];
 
             //Getter name and Setter name
-            Object.defineProperties(this, "name", {
+            Object.defineProperty(this, 'name', {
                 get: function () { return _name },
-                set: function (newName) {
-                    if (!newName || !"") throw new nameEmptyException();
+                set: function (newName = "Anonimous") {
+                    newName = newName.trim();
+                    if (newName === 'undefined' || newName === 'Anon') throw new nameEmptyException();
                     _name = newName;
                 }
             });
@@ -116,41 +157,55 @@ var videoSystem = (function () {
             });
 
             //methods of categories
-            this.addCategory = function (category) {
-                if (category === null) {
-                    throw new objectIsNullException();
+            this.addCategory = function (cat) {
+                if (!(cat instanceof category)) {
+                    throw new objectIsNullException(cat);
                 }
-                var search = _categories.find(category); //search object in array
-                var i = 0;
-                var exist = false;
-                //search person in array
-                while (i < _productions.length && !exist) {
-                    if (category.title === search.title) {
-                        throw new objectExistsException();
-                    } else {
-                        _categories.push(category);
-                        exist = true;
-                        return _categories.length;
-                    }
+                var position = getPositionCategory(cat); //search object in array
+
+                if (position === -1) {
+                    _categories.push({
+                        categories: cat,
+                        productions: []
+                    });
+
+                } else {
+                    throw new objectExistsException();
                 }
+                return _categories.length;
             }
 
-            this.removeCategory = function (category) {
-                var search = _categories.find(category); //search object in array
-                var i = 0;
-                var exist = false;
-                //search person in array
-                while (i < _productions.length && !exist) {
-                    if (category.title !== search.title) {
-                        throw new objectDoesntRegisteredException();
+            this.removeCategory = function (cat) {
+                if (!(cat instanceof category)) {
+                    throw new objectIsNullException(cat);
+                }
+
+                var position = getPositionCategory(cat); //search object in array
+                if (position !== -1) {
+                    if (cat.name !== _categories.name) {
+                        _categories.splice(position, 1);
                     } else {
-                        _categories.splice(category, 1);
-                        exist = true;
-                        return _categories.length;
+                        throw new objectDoesntExistsException();
                     }
                 }
+                return _categories.length;
+
             }
-            var defaultCategory = new category("Default Category");
+
+            function getPositionCategory(cat) {
+                if (!(cat instanceof category)) {
+                    throw new InvalidCategoryException(cat);
+                }
+
+                function compareElements(element) {
+                    return (element.categories.name === cat.name);
+                }
+
+                return _categories.findIndex(compareElements);
+            }
+
+            //create default category
+            var defaultCategory = new category("Anonimous Category");
             this.addCategory(defaultCategory);
 
             //Getter users
@@ -168,39 +223,49 @@ var videoSystem = (function () {
             });
 
             //methods of users
-            this.addUser = function (user) {
-                if (user === null) {
-                    throw new objectIsNullException();
+            this.addUser = function (usr) {
+                if (!(usr instanceof user)) {
+                    throw new objectIsNullException(usr);
                 }
-                var search = _users.find(user); //search object in array
-                var i = 0;
-                var exist = false;
-                //search person in array
-                while (i < _users.length && !exist) {
-                    if ((user.name === search.name) && (user.email === search.email)) {
-                        throw new objectExistsException(user);
+                var position = getPositionUsuer(usr); //search object in array
+
+                if (position === -1) {
+                    _users.push({
+                        users: usr
+                    });
+                } else {
+                    throw new objectExistsException();
+                }
+                return _users.length;
+            }
+
+
+            this.removeUser = function (usr) {
+                if (!(usr instanceof user)) {
+                    throw new objectIsNullException(usr);
+                }
+
+                var position = getPositionUsuer(usr); //search object in array
+                if (position !== -1) {
+                    if (usr.name !== _users.name) {
+                        _users.splice(position, 1);
                     } else {
-                        _users.push(user);
-                        exist = true;
-                        return _users.length;
+                        throw new objectDoesntExistsException();
                     }
+                    return _users.length;
                 }
             }
 
-            this.removeUser = function (user) {
-                var search = _users.find(user); //search object in array
-                var i = 0;
-                var exist = false;
-                //search person in array
-                while (i < _users.length && !exist) {
-                    if (user.name !== search.name) {
-                        throw new objectDoesntExistsException();
-                    } else {
-                        _users.splice(user, 1);
-                        exist = true;
-                        return _users.length;
-                    }
+            function getPositionUsuer(usr) {
+                if (!(usr instanceof user)) {
+                    throw new InvalidUserException(usr);
                 }
+
+                function compareElements(element) {
+                    return ((element.users.name === usr.name) && (element.users.email === usr.email));
+                }
+
+                return _users.findIndex(compareElements);
             }
 
             //Getter productions
@@ -218,42 +283,48 @@ var videoSystem = (function () {
             });
 
             //methods of production
-            this.addProduction = function (production) {
-                if (production === null) {
-                    throw new objectIsNullException();
+            this.addProduction = function (prod) {
+                if (!(prod instanceof production)) {
+                    throw new objectIsNullException(prod);
                 }
-                if (this instanceof production) {
-                    throw new objectDoestObjectException();
+                var position = getPositionProduction(prod); //search object in array
+
+                if (position === -1) {
+                    _productions.push({
+                        productions: prod
+                    });
+                } else {
+                    throw new objectExistsException();
                 }
-                var search = _productions.find(production); //search object in array
-                var i = 0;
-                var exist = false;
-                //search person in array
-                while (i < _productions.length && !exist) {
-                    if ((production.title === search.title)) {
-                        throw new objectExistsException();
-                    } else {
-                        _productions.push(production);
-                        exist = true;
-                        return _productions.length;
-                    }
-                }
+                return _productions.length;
             }
 
-            this.removeProduction = function (production) {
-                var search = _productions.find(production); //search object in array
-                var i = 0;
-                var exist = false;
-                //search person in array
-                while (i < _productions.length && !exist) {
-                    if (production.title !== search.title) {
-                        throw new objectDoesntRegisteredException();
+            this.removeProduction = function (prod) {
+                if (!(prod instanceof production)) {
+                    throw new objectIsNullException(prod);
+                }
+
+                var position = getPositionProduction(prod); //search object in array
+                if (position !== -1) {
+                    if (prod.title !== _productions.title) {
+                        _productions.splice(position, 1);
                     } else {
-                        _productions.splice(production, 1);
-                        exist = true;
-                        return _productions.length;
+                        throw new objectDoesntExistsException();
                     }
                 }
+                return _productions.length;
+            }
+
+            function getPositionProduction(prod) {
+                if (!(prod instanceof production)) {
+                    throw new InvalidProductionException(prod);
+                }
+
+                function compareElements(element) {
+                    return (element.productions.title === prod.title);
+                }
+
+                return _productions.findIndex(compareElements);
             }
 
             //Getter actors
@@ -271,46 +342,53 @@ var videoSystem = (function () {
             });
 
             //methods of actors
-            this.addActor = function (person) {
-                if (person === null) {
-                    throw new objectIsNullException();
+            this.addActor = function (per) {
+                if (!(per instanceof person)) {
+                    throw new objectIsNullException(per);
                 }
-                if (this instanceof person) {
-                    throw new objectDoestObjectException();
+                var position = getPositionActor(per); //search object in array
+
+                if (position === -1) {
+                    _actors.push({
+                        actors: per,
+                        productions: []
+                    });
+                } else {
+                    throw new objectExistsException();
                 }
-                var search = _actors.find(person); //search object in array
-                var i = 0;
-                var exist = false;
-                //search person in array
-                while (i < _actors.length && !exist) {
-                    if ((person.name === search.name)) {
-                        throw new objectExistsException();
+                return _actors.length;
+            }
+
+            this.removeActor = function (per) {
+                if (!(per instanceof person)) {
+                    throw new objectIsNullException(per);
+                }
+
+                var position = getPositionActor(per); //search object in array
+                if (position !== -1) {
+                    if (per.name !== _actors.name) {
+                        _actors.splice(position, 1);
                     } else {
-                        _actors.push(person);
-                        exist = true;
-                        return _actors.length;
+                        throw new objectDoesntExistsException();
                     }
+                    return _actors.length;
                 }
             }
 
-            this.removeActor = function (person) {
-                var search = _actors.find(person); //search object in array
-                var i = 0;
-                var exist = false;
-                //search person in array
-                while (i < _actors.length && !exist) {
-                    if (person.title !== search.title) {
-                        throw new objectDoesntExistsException();
-                    } else {
-                        _actors.splice(person, 1);
-                        exist = true;
-                        return _actors.length;
-                    }
+            function getPositionActor(per) {
+                if (!(per instanceof person)) {
+                    throw new InvalidActorException(per);
                 }
+
+                function compareElements(element) {
+                    return (element.actors.name === per.name);
+                }
+
+                return _actors.findIndex(compareElements);
             }
 
             //Getter director
-            Object.defineProperty(this, 'actors', {
+            Object.defineProperty(this, 'directors', {
                 get: function () {
                     var nextIndex = 0;
                     return {
@@ -324,220 +402,247 @@ var videoSystem = (function () {
             });
 
             //methods of directors
-            this.addDirector = function (person) {
-                if (person === null) {
-                    throw new objectIsNullException();
+            this.addDirector = function (per) {
+                if (!(per instanceof person)) {
+                    throw new objectIsNullException(per);
                 }
-                if (this instanceof person) {
-                    throw new objectDoestObjectException();
-                }
-                var search = _directors.find(person); //search object in array
-                var i = 0;
-                var exist = false;
-                //search person in array
-                while (i < _directors.length && !exist) {
-                    if ((person.name === search.name)) {
-                        throw new objectExistsException();
-                    } else {
-                        _directors.push(person);
-                        exist = true;
-                        return _directors.length;
-                    }
+                var position = getPositionDirector(per); //search object in array
+
+                if (position === -1) {
+                    _directors.push({
+                        directors: per,
+                        productions: []
+                    });
+
+                    return _directors.length;
+                } else {
+                    throw new objectExistsException();
                 }
             }
 
-            this.removeDirector = function (person) {
-                var search = _directors.find(person); //search object in array
-                var i = 0;
-                var exist = false;
-                //search person in array
-                while (i < _directors.length && !exist) {
-                    if (person.title !== search.title) {
-                        throw new objectDoesntExistsException();
-                    } else {
-                        _directors.splice(person, 1);
-                        exist = true;
-                        return _directors.length;
-                    }
+            this.removeDirector = function (per) {
+                if (!(per instanceof person)) {
+                    throw new objectIsNullException(per);
                 }
+
+                var position = getPositionDirector(per); //search object in array
+                if (position !== -1) {
+                    if (per.name !== _directors.name) {
+                        _directors.splice(position, 1);
+                    } else {
+                        throw new objectDoesntExistsException();
+                    }
+                    return _directors.length;
+                }
+            }
+
+            function getPositionDirector(per) {
+                if (!(per instanceof person)) {
+                    throw new InvalidDirectorException(per);
+                }
+
+                function compareElements(element) {
+                    return (element.directors.name === per.name);
+                }
+
+                return _directors.findIndex(compareElements);
             }
 
             //methods of assignment
-            this.assignCategory = function (category, production) {
-                if (category === null) {
+            this.assignCategory = function (cat, prod) {
+                if (cat === null) {
                     throw new objectIsNullException();
                 }
-                if (production === null) {
+                if (prod === null) {
                     throw new objectIsNullException();
                 }
-                var searchCategory = _directors.find(category);
-                var searchProduction = _productions.find(production);
-                var i = 0;
-                var exist = false;
-                //search category and production and if they aren´t they are added
-                while (i < _categories.length && !exist) {
-                    if ((category.title !== searchCategory.title)) {
-                        _categories.push(category);
-                        exist = true;
-                    } else if ((production.title !== searchProduction.title)) {
-                        _productions.push(production);
-                        exist = true;
-                    }
+                if (cat === null || cat === 'undefined' || cat === '') {
+                    cat = this.defaultCategory;
                 }
-                if (!exist) {
-                    _categories.push({
-                        category: new category(),
-                        production: [new production()]
+
+                // We obtain position of the category. If it does not exist it is added
+                var searchCategory = getPositionCategory(cat);
+                if (searchCategory === -1) {
+                    searchCategory = this.addCategory(cat) - 1;
+                }
+                // We obtain position of the production. If it does not exist it is added
+                var positionProduction = getPositionProduction(prod);
+                if (positionProduction === -1) {
+                    positionProduction = this.addProduction(prod) - 1;
+                }
+                var searchProduction = getPositionProductionCategory(prod, _categories[searchCategory].productions);
+                if (searchProduction === -1) {
+                    _categories[searchCategory].productions.push({
+                        categories: cat,
+                        productions: [prod]
                     });
-                    return _categories.production.length;
-                }
-
-            }
-
-            this.deassignCategory = function (category, production) {
-                if (category === null) {
-                    throw new objectIsNullException();
-                }
-                if (production === null) {
-                    throw new objectIsNullException();
-                }
-                var searchCategory = _categories.find(category);
-                var i = 0;
-                var exist = false;
-                //search category and production 
-                while (i < _categories.length && !exist) {
-                    if ((category.production.title === searchCategory.production.title)) {
-                        _categories.splice(_categories.production, 1);
-                        exist = true;
-                        return _categories.production.length;
-                    }
-                }
-            }
-
-            this.assignDirector = function (person, production) {
-                if (person === null) {
-                    throw new objectIsNullException();
-                }
-                if (production === null) {
-                    throw new objectIsNullException();
-                }
-                var searchPerson = _directors.find(person);
-                var searchProduction = _productions.find(production);
-                var i = 0;
-                var exist = false;
-                //search directors and production and if they aren´t they are added
-                while (i < _directors.length && !exist) {
-                    if ((person.name !== searchPerson.name)) {
-                        _directors.push(person);
-                        exist = true;
-                    } else if ((production.title !== searchProduction.title)) {
-                        _productions.push(production);
-                        exist = true;
-                    }
-                }
-                if (!exist) {
-                    _directors.push({
-                        director: new person(),
-                        production: [new production()]
-                    });
-                    return _directors.production.length;
-                }
-            }
-
-            this.deassignDirector = function (person, production) {
-                if (person === null) {
-                    throw new objectIsNullException();
-                }
-                if (production === null) {
-                    throw new objectIsNullException();
-                }
-                var searchPerson = _directors.find(person);
-                var i = 0;
-                var exist = false;
-                //search category and production 
-                while (i < _directors.length && !exist) {
-                    if ((person.production.title === searchPerson.production.title)) {
-                        _directors.splice(_directors.production, 1);
-                        exist = true;
-                        return _directors.production.length;
-                    }
-                }
-            }
-
-            this.assignActor = function (person, production) {
-                if (person === null) {
-                    throw new objectIsNullException();
-                }
-                if (production === null) {
-                    throw new objectIsNullException();
-                }
-                var searchPerson = _actors.find(person);
-                var searchProduction = _productions.find(production);
-                var i = 0;
-                var exist = false;
-                //search directors and production and if they aren´t they are added
-                while (i < _actors.length && !exist) {
-                    if ((person.name !== searchPerson.name)) {
-                        _actors.push(person);
-                        exist = true;
-                    } else if ((production.title !== searchProduction.title)) {
-                        _productions.push(production);
-                        exist = true;
-                    }
-                }
-                if (!exist) {
-                    _actors.push({
-                        actor: new person(),
-                        productions: [{
-                            production: new production(),
-                            character: char,
-                            main: false
-                        }]
-                    });
-                    return _actors.productions.production.length;
-                }
-            }
-
-            this.deassignActor = function (person, production) {
-                if (person === null) {
-                    throw new objectIsNullException();
-                }
-                if (production === null) {
-                    throw new objectIsNullException();
-                }
-                var searchPerson = _actors.find(person);
-                var i = 0;
-                var exist = false;
-                //search category and production 
-                while (i < _actors.length && !exist) {
-                    if ((person.productions.production.title === searchPerson.productions.production.title)) {
-                        _actors.splice(_actors.productions.production, 1);
-                        exist = true;
-                        return _actors.productions.production.length;
-                    }
-                }
-            }
-
-            this.getCast = function (production) {
-                //function that the iterator generates
-                function generator(array) {
-                    var nextIndex = 0;
-                    while (nextIndex < array.length) {
-                        yield array[nextIndex++];
-                    }
-                }
-
-                var gen = generator(_production[production]);
-                if (production === null) {
-                    throw new objectIsNullException();
-                }
-                if (production.title === _production[production].title) {
-                    for (let i = 0; i < _productions.length; i++) {
-                        return gen.next()._production[production].title + " " + gen.next()._production[production].actor.character;
-                    }
                 } else {
-                    throw new iteratorException();
+                    throw new objectExistsException(prod);
                 }
+                return _categories[searchCategory].productions.length;
+            }
+
+            function getPositionProductionCategory(prod, cat) {
+                if (!(prod instanceof production)) {
+                    throw new InvalidProductionException(prod);
+                }
+
+                function compareElements(element) {
+                    return (element.productions.title === prod.title);
+                }
+
+                return cat.findIndex(compareElements);
+            }
+
+            /* this.deassignCategory = function (cat, prod) {
+                 if (cat === null) {
+                     throw new objectIsNullException();
+                 }
+                 if (prod === null) {
+                     throw new objectIsNullException();
+                 }
+                 var searchCategory = getPositionCategory(cat);
+                 if (searchCategory !== -1) {
+                     var searchProduction = getPositionProductionCategory(prod, _categories[searchCategory].productions);
+                     if (searchProduction !== -1) {
+                         _categories[searchCategory].productions.splice(searchProduction, 1);
+                     } else {
+                         throw new objectDoesntExistsException(prod);
+                     }
+                 } else {
+                     throw new objectDoesntExistsException(cat);
+                 }
+                 return _categories[searchCategory].productions.length;
+             } */
+
+            this.assignDirector = function (per, prod) {
+                if (per === null) {
+                    throw new objectIsNullException();
+                }
+                if (prod === null) {
+                    throw new objectIsNullException();
+                }
+
+                // We obtain position of the person. If it does not exist it is added
+                var searchPerson = getPositionDirector(per);
+                if (searchPerson === -1) {
+                    searchPerson = this.addDirector(per) - 1;
+                }
+                // We obtain position of the production. If it does not exist it is added
+                var positionProduction = getPositionProduction(prod);
+                if (positionProduction === -1) {
+                    positionProduction = this.addProduction(prod) - 1;
+                }
+                var searchProduction = getPositionProductionPerson(prod, _directors[searchPerson].productions);
+                if (searchProduction === -1) {
+                    _directors[searchPerson].productions.push({
+                        directors: per,
+                        productions: [prod]
+                    });
+                } else {
+                    throw new objectExistsException(prod);
+                }
+                return _directors[searchPerson].productions.length;
+            }
+
+            function getPositionProductionPerson(prod, per) {
+                if (!(prod instanceof production)) {
+                    throw new InvalidProductionException(prod);
+                }
+
+                function compareElements(element) {
+                    return (element.productions.title === prod.title);
+                }
+
+                return per.findIndex(compareElements);
+            }
+
+            /*  this.deassignDirector = function (person, production) {
+                 if (person === null) {
+                     throw new objectIsNullException();
+                 }
+                 if (production === null) {
+                     throw new objectIsNullException();
+                 }
+                 var searchPerson = _directors.find(person);
+                 var i = 0;
+                 var exist = false;
+                 //search category and production 
+                 while (i < _directors.length && !exist) {
+                     if ((person.production.title === searchPerson.production.title)) {
+                         _directors.splice(_directors.production, 1);
+                         exist = true;
+                         return _directors.production.length;
+                     }
+                 }
+             } */
+
+            this.assignActor = function (per, prod) {
+                if (per === null) {
+                    throw new objectIsNullException();
+                }
+                if (prod === null) {
+                    throw new objectIsNullException();
+                }
+
+                // We obtain position of the person. If it does not exist it is added
+                var searchPerson = getPositionActor(per);
+                if (searchPerson === -1) {
+                    searchPerson = this.addActor(per) - 1;
+                }
+                // We obtain position of the production. If it does not exist it is added
+                var positionProduction = getPositionProduction(prod);
+                if (positionProduction === -1) {
+                    positionProduction = this.addProduction(prod) - 1;
+                }
+                var searchProduction = getPositionProductionPerson(prod, _actors[searchPerson].productions);
+                if (searchProduction === -1) {
+                    _actors[searchPerson].productions.push({
+                        actors: per,
+                        productions: [prod]
+                    });
+                } else {
+                    throw new objectExistsException(prod);
+                }
+                return _actors[searchPerson].productions.length;
+            }
+
+            /* this.deassignActor = function (person, production) {
+                 if (person === null) {
+                     throw new objectIsNullException();
+                 }
+                 if (production === null) {
+                     throw new objectIsNullException();
+                 }
+                 var searchPerson = _actors.find(person);
+                 var i = 0;
+                 var exist = false;
+                 //search category and production 
+                 while (i < _actors.length && !exist) {
+                     if ((person.productions.production.title === searchPerson.productions.production.title)) {
+                         _actors.splice(_actors.productions.production, 1);
+                         exist = true;
+                         return _actors.productions.production.length;
+                     }
+                 }
+             } */
+
+            /* this.getCast = function (prod) {
+                if (!(prod instanceof production)) {
+                    throw new objectIsNullException();
+                }
+
+                var productionPosition = getPositionProduction(prod);
+                if (productionPosition === -1) {
+                    throw new objectDoesntExistsException(prod);
+                }
+                var nextIndex = 0;
+                return {
+                    next: function(){
+                        while(nextIndex < _productions[productionPosition]);
+                    }
+                }
+
             }
 
             this.getProductionsDirector = function (person) {
@@ -604,7 +709,7 @@ var videoSystem = (function () {
                 } else {
                     throw new iteratorException();
                 }
-            }
+            } */
         }
         videoSystem.prototype.constructor = videoSystem;
 
@@ -613,12 +718,12 @@ var videoSystem = (function () {
         return instance;
     } // end singleton
     return {
-		// Returns an object with the getInstance method
-		getInstance: function () { 
-			if (!instantiated) { //If the instantiated variable is undefined, first run, execute init.
-				instantiated = init(); //instantiated contains the unique object
-			}
-			return instantiated; //If it is already assigned, it returns the assignment.
-		}
-	};
+        // Returns an object with the getInstance method
+        getInstance: function () {
+            if (!instantiated) { //If the instantiated variable is undefined, first run, execute init.
+                instantiated = init(); //instantiated contains the unique object
+            }
+            return instantiated; //If it is already assigned, it returns the assignment.
+        }
+    };
 })();
