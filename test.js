@@ -577,7 +577,7 @@ function testVideoSystem() {
         console.log("");
         console.log("Productions " + mov1.title + " assigned to category " + cat3.name + ": " + vs.assignCategory(cat3, mov1));
         console.log("Productions " + ser2.title + " assigned to category " + cat1.name + ": " + vs.assignCategory(cat1, ser2));
-        console.log("Productions " + mov2.title + " assigned to category " + cat3.name + ": " + vs.assignCategory(cat3, mov2));
+        console.log("Productions " + mov2.title + " assigned to category " + cat3.name + ": " + vs.assignCategory(cat3, mov3));
         console.log("");
     } catch (error) {
         console.log(error.toString());

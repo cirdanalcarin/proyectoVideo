@@ -549,7 +549,7 @@ var videoSystem = (function () {
 
                         //search in the array and check if the titles match
                         while (i < _categories[positionCategory].productions.length && !yes) {
-                            if (_categories[positionCategory].productions[i].production.title === prod.title) {
+                            if (_categories[positionCategory].productions[i].title === prod.title) {
                                 yes = true;
                             }
                             i++;
