@@ -233,25 +233,27 @@ InvalidPasswordException.prototype.toString = function () {
 }
 
 //start category object
-function category(name) {
+function category(name, description = "Empty description") {
     //check instance creation
     if (!(this instanceof category)) {
         throw new invalidAccesConstructor();
     }
 
     //input validation
-
-    if (!(name) || name === "") throw new emptyValueException("name");
+    name = typeof name !== 'undefined' ? name : "";
+    if (name === 'undefined' || name === "") throw new emptyValueException("name");
+    
 
     //private attributes
     var _name = name;
-    var _description = "";
+    var _description = description;
 
     //Getters and Setters
-    Object.defineProperty(this, "name", {
+    Object.defineProperty(this, 'name', {
         get: function () { return _name },
         set: function (newName) {
-            if (newName === 'undefined' || nowName === "") throw new InvalidNameException(newName);
+            newName = typeof newName !== 'undefined' ? newName : "";
+            if (newName === 'undefined' || newName === "") throw new InvalidNameException(newName);
             _name = newName;
         }
     });
@@ -259,11 +261,11 @@ function category(name) {
     Object.defineProperty(this, "description", {
         get: function () { return _description },
         set: function (NewDescription) {
-            if (!NewDescription) throw new InvalidDescriptionException(NewDescription);
             _description = NewDescription;
         }
     });
 }
+category.prototype = {};
 category.prototype.constructor = category;
 category.prototype.toString = function () {
     return "Name: " + this.name + "\nDescription: " + this.description;
@@ -271,73 +273,86 @@ category.prototype.toString = function () {
 //End object category
 
 //start object coordinate
-function coords(latitude = 0, longitude = 0) {
+function coords(latitude, longitude) {
     //check instance creation
-    if (!(this instanceof user)) {
+    if (!(this instanceof coords)) {
         throw new invalidAccesConstructor();
     }
 
     //input validation
-    latitude = typeof latitude !== 'undefined' ? Number(latitude).valueOf : 0;
-    if (Number.isNaN(latitude) || latitude < -90 || latitude > 90) throw new emptyValueException("latitude");
-    longitude = typeof longitude !== 'undefined' ? Number(longitude).valueOf : 0;
-    if (Number.isNaN(longitude) || longitude < -180 || longitude > 180) throw new emptyValueException("longitude");
+    latitude = typeof latitude !== 'undefined' ? Number(latitude).valueOf() : 0;
+    if (Number.isNaN(latitude) || latitude < -90 || latitude > 90) throw new InvalidValueException("latitude");
+    longitude = typeof longitude !== 'undefined' ? Number(longitude).valueOf() : 0;
+    if (Number.isNaN(longitude) || longitude < -180 || longitude > 180) throw new InvalidValueException("longitude");
 
     //private attributes
     var _latitude = latitude;
     var _longitude = longitude;
 
     //Getter and Setter
-    Object.defineProperty(this, "latitude", {
-        get: function () { return _latitude },
-        set: function (newLatitude) {
-            if (Number.isNaN(newLatitude) || newLatitude < -90 || newLatitude > 90) throw new InvalidLatitudeException(newLatitude);
-            _latitude = newLatitude;
+    Object.defineProperty(this, 'latitude', {
+        get: function () {
+            return _latitude;
+        },
+        set: function (newLatidude) {
+            newLatidude = typeof newLatidude !== 'undefined' ? Number(newLatidude).valueOf() : 0;
+            if (Number.isNaN(newLatidude) || newLatidude < -90 || newLatidude > 90) throw new InvalidValueException("latitude");
+            _latitude = newLatidude;
         }
     });
 
-    Object.defineProperty(this, "longitude", {
-        get: function () { return _longitude },
+    Object.defineProperty(this, 'longitude', {
+        get: function () {
+            return _longitude;
+        },
         set: function (newLongitude) {
-            if (Number.isNaN(newLongitude) || newLongitude < -180 || newLongitude > 180) throw new InvalidLongitudeException(newLongitude);
+            newLongitude = typeof newLongitude !== 'undefined' ? Number(newLongitude).valueOf() : 0;
+            if (Number.isNaN(newLongitude) || newLongitude < -180 || newLongitude > 180) throw new InvalidValueException("latitude");
             _longitude = newLongitude;
         }
     });
 }
+coords.prototype = {};
 coords.prototype.constructor = coords;
 coords.prototype.toString = function () {
-    return "Longitude: " + this.longitude + "\nLatitude: " + this.latitude;
+    return "Longitude: " + this.longitude + "\nLatitude: " + this.latitude + "\n";
 }
 //End object coordinate
 
 //start object person
-function person(name, lastname1, born) {
+function person(name, lastname1, lastname2, born, picture) {
     //check instance creation
     if (!(this instanceof person)) {
         throw new invalidAccesConstructor();
     }
 
     //input validation
-    if (!(name) || name === '') throw new emptyValueException("name");
+    name = typeof name !== 'undefined' ? name : "";
+    if (name === "") throw new emptyValueException("name");
+    lastname1 = typeof lastname1 !== 'undefined' ? lastname1 : "";
+    if (lastname1 === "") throw new emptyValueException("lastname1");
+    lastname2 = typeof lastname2 !== 'undefined' ? lastname2 : "";
 
-    if (!(lastname1) || lastname1 === '') throw new emptyValueException("lastname1");
+    born = typeof born !== 'undfined' ? born : ""
+    if (born === "") throw new emptyValueException("born");
+    if (/^(?:0?[1-9]|1[0-1-2])([\-/.])(3[01]|[12][0-9]|0?[1-9])\1\d{4}$/.test(born) !== true)
+        throw new InvalidDateException("born");
 
-    if (!(born) || born === '') throw new emptyValueException("born");
-    //check date format
-    if (/^(?:0?[1-9]|1[0-1-2])([\-/.])(3[01]|[12][0-9]|0?[1-9])\1\d{4}$/.test(born) !== true) throw new InvalidDateException(born);
+    picture = typeof picture !== 'undefined' ? picture : "";
 
     //private attributes
-    var _name = name.trim();
-    var _lastname1 = lastname1.trim();
-    var _lastname2 = "";
+    var _name = name;
+    var _lastname1 = lastname1;
+    var _lastname2 = lastname2;
     var _born = new Date(born);
-    var _picture = "";
+    var _picture = picture;
 
     //Getters and Setters
     Object.defineProperty(this, "name", {
         get: function () { return _name },
         set: function (newName) {
-            if (newName === 'undefined' || nowName === "") throw new InvalidNameException(newName);
+            newName = typeof newName !== 'undefined' ? newName : "";
+            if (newName === "") throw new InvalidNameException(newName);
             _name = newName;
         }
     });
@@ -345,15 +360,17 @@ function person(name, lastname1, born) {
     Object.defineProperty(this, "lastname1", {
         get: function () { return _lastname1 },
         set: function (newLastname1) {
-            if (newLastname1 === 'undefined' || newLastname1 === "") throw new InvalidLastNameException(newLastname1);
+            newLastname1 = typeof newLastname1 !== 'undefined' ? newLastname1 : "";
+            if (newLastname1 === "") throw new InvalidLastNameException(newLastname1);
             _lastname1 = newLastname1;
         }
     });
 
     Object.defineProperty(this, "lastname2", {
-        get: function () { return _lastname2 || "" },
+        get: function () { return _lastname2 },
         set: function (newLastname2) {
-            if (newLastname2 === 'undefined' || newLastname2 === "") throw new InvalidLastnameException(newLastname2);
+            newLastname2 = typeof newLastname2 !== 'undefined' ? newLastname2 : "";
+            if (newLastname2 === "") throw new InvalidLastnameException(newLastname2);
             _lastname2 = newLastname2;
         }
     });
@@ -361,8 +378,10 @@ function person(name, lastname1, born) {
     Object.defineProperty(this, "born", {
         get: function () { return _born },
         set: function (newBorn) {
-            if (/^(?:0?[1-9]|1[0-1-2])([\-/.])(3[01]|[12][0-9]|0?[1-9])\1\d{4}$/.test(born) !== true) throw new InvalidDateException(born);
+            newBorn = typeof newBorn !== 'undefined' ? newBorn : "";
             if (newBorn === 'undefined' || newBorn === "") throw new InvalidDateException(newBorn);
+            if (/^(?:0?[1-9]|1[0-1-2])([\-/.])(3[01]|[12][0-9]|0?[1-9])\1\d{4}$/.test(newBorn) !== true)
+                throw new InvalidDateException("born");
             _born = newBorn;
         }
     });
@@ -370,22 +389,24 @@ function person(name, lastname1, born) {
     Object.defineProperty(this, "picture", {
         get: function () { return _picture },
         set: function (newPicture) {
-            if (!newPicture || !"") throw new InvalidPictureException(newPicture);
+            newPicture = typeof newPicture !== 'undefined' ? newBorn : "";
+            if (newPicture === "") throw new InvalidPictureException(newPicture);
             _picture = newPicture;
         }
     });
 }
+person.prototype = {};
 person.prototype.constructor = person;
 person.prototype.toString = function () {
-    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    var options = { weekday: "long", year: "numeric", day: "numeric", month: "long" };
     return "Name: " + this.name + "\nFirst Lastname: " + this.lastname1 + "\nSecond Lastname: " + this.lastname2
-        + "\nBorn: " + this.born.toLocaleDateString('es-Es', options) + "\nPicture: " + this.picture;
+        + "\nBorn: " + this.born.toLocaleDateString('en-En', options) + "\nPicture: " + this.picture;
 }
 //End object person
 
 //start object production
 //abstract function to implement the inheritance
-function production(title, publication) {
+function production(title, nationality, publication, synopsis, image) {
 
     //check instance creation
     if (!(this instanceof production)) {
@@ -396,24 +417,33 @@ function production(title, publication) {
         throw new abstractClassException("Production");
     }
 
-
     //input validation
-    if (!(title) || title === "") throw new emptyValueException("title");
-    if (!(publication) || publication === "") throw new emptyValueException("publication");
-    if (/^(?:0?[1-9]|1[0-1-2])([\-/.])(3[01]|[12][0-9]|0?[1-9])\1\d{4}$/.test(publication) !== true) throw new InvalidDateException(publication);
+    title = typeof title !== 'undefined' ? title : "";
+    if (title === 'undefined' || title === "") throw new emptyValueException("title");
+
+    publication = typeof publication !== 'undefined' ? publication : "";
+    if (publication === 'undefined' || publication === "") throw new emptyValueException("publication");
+    if (/^(?:0?[1-9]|1[0-1-2])([\-/.])(3[01]|[12][0-9]|0?[1-9])\1\d{4}$/.test(publication) !== true)
+        throw new InvalidPublicationException("publication");
+
+
+    nationality = typeof nationality !== 'undefined' ? nationality : "";
+    synopsis = typeof synopsis !== 'undefined' ? synopsis : "";
+    image = typeof image !== 'undefined' ? image : "";
 
     //private attributes
     var _title = title;
-    var _nationality = "";
+    var _nationality = nationality;
     var _publication = new Date(publication);
-    var _synopsis = "";
-    var _image = "";
+    var _synopsis = synopsis;
+    var _image = image;
 
     //Getter and Setter
     Object.defineProperty(this, "title", {
         get: function () { return _title },
         set: function (newTitle) {
-            if (!(newTitle) || newTitle === "") throw new InvalidTitleException(newTitle);
+            newTitle = typeof newTitle !== 'undefined' ? newTitle : "";
+            if (newTitle === "") throw new InvalidTitleException(newTitle);
             _title = newTitle;
         }
     });
@@ -421,6 +451,7 @@ function production(title, publication) {
     Object.defineProperty(this, "nationality", {
         get: function () { return _nationality },
         set: function (newNationality) {
+            newNationality = typeof newNationality !== 'undefined' ? newNationality : "";
             _nationality = newNationality;
         }
     });
@@ -428,8 +459,10 @@ function production(title, publication) {
     Object.defineProperty(this, "publication", {
         get: function () { return _publication },
         set: function (newPublication) {
-            if (!(newPublication) || newPublication === "") throw new InvalidPublicationException(newPublication);
-            if (/^(?:0?[1-9]|1[0-1-2])([\-/.])(3[01]|[12][0-9]|0?[1-9])\1\d{4}$/.test(publication) !== true) throw new InvalidDateException(publication);
+            if (/^(?:0?[1-9]|1[0-1-2])([\-/.])(3[01]|[12][0-9]|0?[1-9])\1\d{4}$/.test(newPublication) !== true)
+                throw new InvalidPublicationException("publication");
+            newPublication = typeof newPublication !== 'undefined' ? newPublication : "";
+            if (newPublication === 'undefined' || newPublication === "") throw new InvalidPublicationException(newPublication);
             _publication = newPublication;
         }
     });
@@ -437,6 +470,7 @@ function production(title, publication) {
     Object.defineProperty(this, "synopsis", {
         get: function () { return _synopsis },
         set: function (newSynopsis) {
+            newSynopsis = typeof newSynopsis !== 'undefined' ? newSynopsis : "";
             _synopsis = newSynopsis;
         }
     });
@@ -444,30 +478,32 @@ function production(title, publication) {
     Object.defineProperty(this, "image", {
         get: function () { return _image },
         set: function (newImage) {
+            newImage = typeof newImage !== 'undefined' ? newImage : "";
             _image = newImage;
         }
     });
 }
+production.prototype = {};
 production.prototype.constructor = production;
 production.prototype.toString = function () {
     var options = { weekday: "long", year: "numeric", day: "numeric", month: "long" };
-    return "Title: " + this.title + "\nNationality: " + this.nationality + "\nPublication: " + this.publication.toLocaleDateString('es-Es', options)
+    return "Title: " + this.title + "\nNationality: " + this.nationality + "\nPublication: " + this.publication.toLocaleDateString('en-En', options)
         + "\nSynopsis: " + this.synopsis + "\nImage: " + this.image;
 }
 
 //inherit from production
-function movie(title, publication) {
+function movie(title, nationality, publication, synopsis, image, resource, location) {
     //check instance creation
     if (!(this instanceof movie)) {
         throw new invalidAccesConstructor();
     }
 
     //invoke the parent constructor
-    production.call(this, title, publication);
+    production.call(this, title, nationality, publication, synopsis, image);
 
     //private attributes
     var _resource = resource;
-    var _location = [];
+    var _location = location;
 
     //Getter and Setter
     Object.defineProperty(this, "resource", {
@@ -488,21 +524,21 @@ movie.prototype = Object.create(production.prototype);
 movie.prototype.constructor = movie;
 movie.prototype.toString = function () {
     return production.prototype.toString.call(this)
-        + "\nResource: " + this.resouce + "\nLocation: " + this.locations;
+        + "\nResource: " + this.resource + "\nLocation: \n" + this.location;
 }
 
 //inherit from production
-function serie(title, publication) {
-     //check instance creation
-     if (!(this instanceof serie)) {
+function serie(title, nationality, publication, synopsis, image, season) {
+    //check instance creation
+    if (!(this instanceof serie)) {
         throw new invalidAccesConstructor();
     }
 
     //invoke the parent constructor
-    production.call(this, title, publication);
+    production.call(this, title, nationality, publication, synopsis, image);
 
     //private attributes
-    var _season = [];
+    var _season = season;
 
     //Getter and Setter
     Object.defineProperty(this, "season", {
@@ -521,42 +557,48 @@ serie.prototype.toString = function () {
 //End object production
 
 //start object resource
-function resource(duration = 0, link = "") {
+function resource(duration, link, audio, subtitle) {
     //check instance creation
-    if (!(this instanceof person)) {
+    if (!(this instanceof resource)) {
         throw new invalidAccesConstructor();
     }
 
     //input validation
-	if (Number.isNaN(duration)) throw new emptyValueException("duration");
-    
+    duration = typeof duration !== 'undefined' ? duration : 0;
+    if (duration === 0) throw new emptyValueException("duration");
+    link = typeof link !== 'undefinded' ? link : "";
     if (link === "") throw new emptyValueException("link");
     //check link format
-    if (/^https?:\/\/(www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}(\:(\d){2,4})?(\/[a-zA-Z0-9_.$%._\+~#]+)$/.test (link) === true ||
-		/^(\/?[a-zA-Z0-9_.$%._\+~#]+)*(\?(\w+=.*)(\&(\w+=.+))*)?$/.test (link) === true)
-		throw new InvalidLinkException("link");
+    if (/^https?:\/\/(www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}(\:(\d){2,4})?(\/[a-zA-Z0-9_.$%._\+~#]+)$/.test(link) === true ||
+        /^(\/?[a-zA-Z0-9_.$%._\+~#]+)*(\?(\w+=.*)(\&(\w+=.+))*)?$/.test(link) === true)
+        throw new InvalidLinkException("link");
+    audio = typeof audio !== 'undefined' ? audio : [];
+    subtitle = typeof subtitle !== 'undefined' ? subtitle : [];
 
     //private attributes
     var _duration = duration;
     var _link = link;
-    var _audio = [];
-    var _subtitle = [];
+    var _audio = audio;
+    var _subtitle = subtitle;
 
 
     //Getters and Setters
     Object.defineProperty(this, "duration", {
         get: function () { return _duration },
         set: function (newDuration) {
-            if (isNaN(newDuration)) throw new InvalidDurationException(newDuration);
+            newDuration = typeof newDuration !== 'undefined' ? newDuration : 0;
+            if (newDuration === 0) throw new InvalidDurationException(newDuration);
             _duration = newDuration;
         }
     });
-    
+
     Object.defineProperty(this, "link", {
         get: function () { return _link },
         set: function (newLink) {
-            if (/^https?:\/\/(www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}(\:(\d){2,4})?(\/[a-zA-Z0-9_.$%._\+~#]+)$/.test (newLink) === true ||
-		/^(\/?[a-zA-Z0-9_.$%._\+~#]+)*(\?(\w+=.*)(\&(\w+=.+))*)?$/.test (newLink) === true) throw new InvalidLinkException(newLink);
+            newLink = typeof newLink !== 'undefinded' ? newLink : "";
+            if (newLink === "") throw new emptyValueException("newLink");
+            if (/^https?:\/\/(www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}(\:(\d){2,4})?(\/[a-zA-Z0-9_.$%._\+~#]+)$/.test(newLink) === true ||
+                /^(\/?[a-zA-Z0-9_.$%._\+~#]+)*(\?(\w+=.*)(\&(\w+=.+))*)?$/.test(newLink) === true) throw new InvalidLinkException(newLink);
             _link = newLink;
         }
     });
@@ -564,57 +606,67 @@ function resource(duration = 0, link = "") {
     Object.defineProperty(this, "audio", {
         get: function () { return _audio },
         set: function (newAudio) {
-            _audio.push(newAudio);
+            newAudio = typeof newAudio !== 'undefined' ? newAudio : [];
+            _audio = newAudio;
         }
     });
 
     Object.defineProperty(this, "subtitle", {
         get: function () { return _subtitle },
         set: function (newSubtitle) {
-            _subtitle.push(newSubtitle);
+            newSubtitle = typeof newSubtitle !== 'undefined' ? newSubtitle : [];
+            _subtitle = newSubtitle;
         }
     });
 
 }
+resource.prototype = {};
 resource.prototype.constructor = resource;
 resource.prototype.toString = function () {
-    return "Duration: " + this.duration + "\nLink: " + this.link;
+    return "\nDuration: " + this.duration + "\nLink: " + this.link + "\nAudio: " + this.audio + "\nSubtitle: " + this.subtitle + "\n";
 }
 //End object resource
 
 //start object season
-function season(title) {
+function season(title, episodes) {
     //check instance creation
     if (!(this instanceof season)) {
         throw new invalidAccesConstructor();
     }
 
     //input validation
-    if (!(title) || title === "") throw new emptyValueException("title");
+    title = typeof title !== 'undefined' ? title : "";
+    if (title === "") throw new emptyValueException("title");
 
     //private attributes
     var _title = title;
-    var _episodes = [];
+    var _episodes = episodes || [];
 
     //Getters and Setters
     Object.defineProperty(this, "title", {
         get: function () { return _title },
         set: function (newTitle) {
-            if (!(newTitle) || newTitle === "") throw new InvalidTitleException(newTitle);
+            newTitle = typeof newTitle !== 'undefined' ? newTitle : "";
+            if (newTitle === "") throw new InvalidTitleException(newTitle);
             _title = newTitle;
         }
     });
 
     Object.defineProperty(this, "episodes", {
         get: function () { return _episodes },
-        set: function (newEpisodes) {
-            _episodes.push(newEpisodes);
+        set: function (newEpisodes = []) {
+            _episodes = {
+                title: String,
+                episode: resource,
+                scenarios: [location]
+            };
         }
     });
 }
+season.prototype = {};
 season.prototype.constructor = season;
 season.prototype.toString = function () {
-    return "Title: " + this.title + "\nEspisode: " + this.epsisodes;
+    return "\nTitle: " + this.title + "\nEspisodes: \n" + this.episodes + "\n";
 }
 //End object season
 
@@ -629,11 +681,11 @@ function user(name, email, password) {
     if (!(name) || name === "") throw new emptyValueException("name");
     if (/^[a-zA-Z][a-zA-Z0-9_\-]*(\.[a-zA-Z0-9_\-]*)*[a-zA-Z0-9]$/.test(name) !== true) throw new InvalidNameException("name");
 
-    if (!(email) || email === '') throw new emptyValueException("email");
-    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(email)) throw new InvalidEmailException("email");
+    if (!(email) || email === "") throw new emptyValueException("email");
+    if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email) !== true) throw new InvalidEmailException("email");
 
-    if (!(password) || password === '') throw new emptyValueException("password");
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,15}[^'\s]/.test(password)) throw new InvalidPasswordException("password");
+    if (!(password) || password === "") throw new emptyValueException("password");
+    if (/^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/.test(password) !== true) throw new InvalidPasswordException("password");
 
     //private attributes
     var _name = name;
@@ -644,8 +696,8 @@ function user(name, email, password) {
     Object.defineProperty(this, "name", {
         get: function () { return _name },
         set: function (newName) {
-            if (!(newName) || newName === "") throw new emptyValueException("newName");
             if (/^[a-zA-Z][a-zA-Z0-9_\-]*(\.[a-zA-Z0-9_\-]*)*[a-zA-Z0-9]$/.test(newName) !== true) throw new InvalidNameException("newName");
+            if (newName === 'undefined' || newName === "") throw new emptyValueException("newName");
             _name = newName;
         }
     });
@@ -653,21 +705,22 @@ function user(name, email, password) {
     Object.defineProperty(this, "email", {
         get: function () { return _email },
         set: function (newEmail) {
-            if (!(newEmail) || newEmail === '') throw new emptyValueException("newEmail");
-            if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(newEmail)) throw new InvalidEmailException("newEmail");
-            _episodes = newEmail;
+            if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(newEmail) !== true) throw new InvalidEmailException("newEmail");
+            if (newEmail === 'undefined' || newEmail === "") throw new emptyValueException("newEmail");
+            _email = newEmail;
         }
     });
 
     Object.defineProperty(this, "password", {
         get: function () { return _password },
         set: function (newPaswword) {
-            if (!(newPaswword) || newPaswword === '') throw new emptyValueException("newPaswword");
-            if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,15}[^'\s]/.test(newPaswword)) throw new InvalidPasswordException("newPaswword");
+            if (/^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/.test(newPaswword) !== true) throw new InvalidPasswordException("newPaswword");
+            if (newPasword === 'undefined' || newPassword === "") throw new emptyValueException("password");
             _password = newPaswword;
         }
     });
 }
+user.prototype = {};
 user.prototype.constructor = user;
 user.prototype.toString = function () {
     return "Name: " + this.name + "\nEmail: " + this.email + "\nPassword: " + this.password;
